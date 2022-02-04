@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{D7BF376E-2A04-DBA4-3520-5BB837B02AAD}</ProjectGuid>
+    <ProjectGuid>{D3BD67D3-D37B-821E-6E8E-5639261F5C25}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -53,13 +53,13 @@
     <UnityVersion>2021.1.12f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\_scripts\FreeCell_SceneController.cs" />
     <Compile Include="Assets\_scripts\FreeCell_TitleMenuController.cs" />
-    <Compile Include="Assets\_scripts\FreeCell_GameController.cs" />
-    <Compile Include="Assets\_scripts\FreeCell_Deck_Data.cs" />
-    <Compile Include="Assets\_scripts\Freecell_CardClickManager.cs" />
-    <Compile Include="Assets\_scripts\FreeCell_SingleCardData.cs" />
     <Compile Include="Assets\_scripts\FreeCell_GameMenuController.cs" />
+    <Compile Include="Assets\_scripts\Freecell_CardClickManager.cs" />
+    <Compile Include="Assets\_scripts\FreeCell_Deck_Data.cs" />
+    <Compile Include="Assets\_scripts\FreeCell_GameController.cs" />
+    <Compile Include="Assets\_scripts\FreeCell_SingleCardData.cs" />
+    <Compile Include="Assets\_scripts\FreeCell_SceneController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

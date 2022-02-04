@@ -33,7 +33,7 @@ public class FreeCell_Deck_Data : MonoBehaviour
     public GameObject _garbageHolder;
     public CardData[] _freeCells;
     public GameObject _freeCellHolder;
-    public CardData[] _completeCells;
+    public CardData[] _completeCells; //Using the name "completeCells" instead of "foundation" to refer to the top right 4 Cells throughout the project.
     public GameObject _completeCellHolder;
 
     private void Start()
