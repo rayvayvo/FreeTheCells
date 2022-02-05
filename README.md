@@ -39,11 +39,11 @@ known bugs since I ran out of time:
 
   -Double clicking cards to clear from "freecell" slot sometimes doesn't clear data properly and renders that slot unusable.
   
-  -Drag and drop on Completed ("foundation) slots doesn't work properly since Raycast ignore on the image components function has a bug.
+  -Drag and drop on Completed("foundation") slots doesn't work properly since Raycast ignore on the image components function has a bug.
   
   -under certain conditions you can move a stack of cards that match the alternating suit convention, but the top card value doesnt match (the following cards in the        stack do though).
-    
   
+  -shuffling a new game doesn't clear the Completed("foundation") stack properly
   
 If I had one more day:
 ------------------------------------
@@ -63,4 +63,6 @@ If I had one more day:
   -general polish
   
   -clean up code by removing all Debug.logs, fixing alignment and spacing, and maybe refactoring a function or two
+  
+  -add in save games so you can load unfinished games
   
