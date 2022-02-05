@@ -66,3 +66,4 @@ If I had one more day:
   
   -add in save games so you can load unfinished games
   
+  -move the load player stats function into its own donotdestroy script from title screen so it is loaded way before the game board for cleaner data management
