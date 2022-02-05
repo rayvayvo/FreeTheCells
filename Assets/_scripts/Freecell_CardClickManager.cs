@@ -44,19 +44,14 @@ public class Freecell_CardClickManager : MonoBehaviour
         if (_dragging == false) //sets data first frame object is dragged and checks if column can be moved
         {
             GetDraggedCardAmount();
-            _originalPos = _card.transform.parent.transform;
-            _card.GetComponent<Image>().raycastTarget = false; //make it so the card doesn't block pointer data for drop location
-            _card.transform.SetParent(_draggedCardHolder.transform);
-            ToggleCardRaycastsOnTopCells(false);
             
-
             if (_draggedCardAmount == 1) //check for how many cards are being moved at once, check to see if there's enough free slots on board to accomodate a move of a stack of cards
             {
                 _dragging = true;
             }
             else
             {
-                int _freeSlotsForMoving = 0;
+                int _freeSlotsForMoving = 1; //start at one because of player able to move amount of slots + 1
                 for (int a = 0; a < 8; a ++)
                 {
                     if (_deckDataController._cardColumns[a].transform.childCount == 0)
@@ -71,13 +66,70 @@ public class Freecell_CardClickManager : MonoBehaviour
                         _freeSlotsForMoving += 1;
                     }
                 }
+                
                 if (_freeSlotsForMoving >= _draggedCardAmount)
                 {
-                    _dragging = true;
+                    //iterate through each child and check for suit and value to check for possible move
+                    Transform _childCounter = _activeCardObj.transform.GetChild(0);
+                    FreeCell_Deck_Data.CardData _childData = _activeCardObj.transform.GetChild(0).GetComponent<FreeCell_SingleCardData>()._data;
+                    FreeCell_Deck_Data.CardData _compareData = _activeCardObj.transform.GetComponent<FreeCell_SingleCardData>()._data;
+
+                    for (int c = 0; c < _draggedCardAmount; c++)
+                    {
+                        if (_childData._value > 0 && _compareData._value == _childData._value + 1)
+                        {
+                            switch (_childData._suit)
+                            {
+                                case "Clubs":
+                                case "Spades":
+                                    if (_compareData._suit == "Diamonds" || _compareData._suit == "Hearts")
+                                    {
+                                        _dragging = true;
+                                    }
+                                    else
+                                    {
+                                        _dragging = false;
+                                        break;
+                                    }
+                                    break;
+                                case "Diamonds":
+                                case "Hearts":
+                                    if (_compareData._suit == "Clubs" || _compareData._suit == "Spades")
+                                    {
+                                        _dragging = true;
+                                    }
+                                    else
+                                    {
+                                        _dragging = false;
+                                        break;
+                                    }
+                                    break;
+                            }
+                        }
+
+                        _compareData = _childData; //move all data points down one spot to compare the next child in heirarchy
+                        _childData = _childCounter.GetComponent<FreeCell_SingleCardData>()._data;
+
+                        if (_childCounter.childCount > 0)
+                        {
+                            _childCounter = _childCounter.transform.GetChild(0).transform;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
                 }
             }
+            if (_dragging == true) //if it passed the check to start dragging, set data (this only triggers once per drag)
+            {
+                _originalPos = _card.transform.parent.transform;
+                _card.GetComponent<Image>().raycastTarget = false; //make it so the card doesn't block pointer data for drop location
+                _card.transform.SetParent(_draggedCardHolder.transform);
+                ToggleCardRaycastsOnTopCells(false);
+            }
         }
-        if (_dragging == true)
+        else 
         {
             _activeCardObj.transform.position = new Vector3(_mousePos.x, _mousePos.y - 125, _mousePos.z); //moves the card with the mouse
 
@@ -186,6 +238,7 @@ public class Freecell_CardClickManager : MonoBehaviour
                     case "CompleteCell":
                         _activeCardIndex = int.Parse(_originalPos.name.Substring(_originalPos.name.Length - 1, 1));
                         _deckDataController._completeCells[_activeCardIndex]._value = _activeCardData._value - 1;
+                        _deckDataController._gameController.ChangeScore(-_activeCardData._value); //subtract score if pulling from Completed cell
                         break;
                 }
 
@@ -200,8 +253,9 @@ public class Freecell_CardClickManager : MonoBehaviour
                         if(_stack > 1)
                         {
                             //disable raycasts of card below in same pile to make less work for the toggle raycast function
-                            _activeCardObj.transform.parent.GetChild(_stack - 2).GetComponent<Image>().raycastTarget = false; 
+                            _activeCardObj.transform.parent.GetChild(_stack - 1).GetComponent<Image>().raycastTarget = false; 
                         }
+                        _deckDataController._gameController.ChangeScore(_activeCardData._value); //add score for completing cards
                         break;
                     case "Column":
                         _activeCardObj.transform.localPosition = new Vector3(0, 175, 0);
@@ -211,7 +265,6 @@ public class Freecell_CardClickManager : MonoBehaviour
             }
             else
             {
-                Debug.Log(_originalPos.transform + "????");
                 _card.transform.SetParent(_originalPos.transform);
                 _card.transform.localPosition = new Vector3(0, -40, 0);
                 
@@ -234,9 +287,10 @@ public class Freecell_CardClickManager : MonoBehaviour
 
     public void CardClick(GameObject _card)
     {
-        SetActiveCardData(_card);
+        
         if (_doubleClickTimer > 0 && _lastClickedCard == _card) //double click trigger
         {
+            SetActiveCardData(_card);
             CardDoubleClick();
         }
         else //set timer for double click window
@@ -249,38 +303,46 @@ public class Freecell_CardClickManager : MonoBehaviour
     //on click function that takes double click to move cards to top Completed Cell if possible, if not then top bottom empty column, if not then empty freecell 
     private void CardDoubleClick() 
     {
-        
+        bool _canPlace = false;
+
         if (_activeCardObj.transform.childCount == 0) //check if no children, must be empty free card
         {
+            _originalPos = _activeCardObj.transform.parent.transform;
+
             if (_activeCardData._value == 1) //if ace move to empty spot
             {
-                Debug.Log("its an ace");
                 CheckDoubleClickForEmptyCompleteCell();
                 _activeCardObj.transform.SetParent(_deckDataController._completeCellHolder.transform.GetChild(_activeCardIndex).transform);
                 _activeCardObj.transform.localPosition = new Vector3(0, 0, 0);
-                //data handling
+                _deckDataController._completeCells[_activeCardIndex] = _activeCardData;
+                _canPlace = true;
+                _deckDataController._gameController.ChangeScore(_activeCardData._value);
             }
             else if (CheckDoubleClickForCompleteCellMatch() != 9) //check for completed Cell matches, return index if true
             {
-                Debug.Log("its a complete pile match");
                 _activeCardObj.transform.SetParent(_deckDataController._completeCellHolder.transform.GetChild(_activeCardIndex).transform);
                 _activeCardObj.transform.localPosition = new Vector3(0, 0, 0);
-                //data handling
+                _deckDataController._completeCells[_activeCardIndex] = _activeCardData;
+                _canPlace = true;
+                _deckDataController._gameController.ChangeScore(_activeCardData._value); 
             }
             else if (CheckDoubleClickForEmptyBoardMatch() != 9) //check for empty board columns, return index if true
             {
-                Debug.Log("its an empty board match");
                 _activeCardObj.transform.SetParent(_deckDataController._cardColumns[_activeCardIndex].transform);
                 _activeCardObj.transform.localPosition = new Vector3(0, 175, 0);
-                //data handling
+                _canPlace = true;
             }
             else if (CheckDoubleClickForEmptyFreeCellMatch() != 9) //check for empty free cells, return index if true
             {
-                Debug.Log("its a free cell match");
                 _activeCardObj.transform.SetParent(_deckDataController._freeCellHolder.transform.GetChild(_activeCardIndex).transform);
                 _activeCardObj.transform.localPosition = new Vector3(0, 0, 0);
-                //data handling
+                _deckDataController._freeCells[_activeCardIndex] = _activeCardData;
+                _canPlace = true;
             }
+        }
+        if (_canPlace == true)
+        {
+            _lastPlayPos = _activeCardObj.transform.parent.transform;
         }
         else
         {
@@ -314,7 +376,7 @@ public class Freecell_CardClickManager : MonoBehaviour
         {
             for (int a = 0; a < 4; a++)
             {
-                if (_activeCardData._value == _deckDataController._completeCells[a]._value + 1)
+                if (_activeCardData._suit == _deckDataController._completeCells[a]._suit && _activeCardData._value == _deckDataController._completeCells[a]._value + 1)
                 {
                     _activeCardIndex = a;
                 }
@@ -374,6 +436,7 @@ public class Freecell_CardClickManager : MonoBehaviour
             case "CompleteCell":
                 _activeCardObj.transform.localPosition = new Vector3(0, 0, 0);
                 _deckDataController._completeCells[_activeCardIndex] = _activeCardData;
+                _deckDataController._gameController.ChangeScore(_activeCardData._value);
                 break;
             case "Column":
                 _activeCardObj.transform.localPosition = new Vector3(0, 175, 0);
@@ -387,9 +450,9 @@ public class Freecell_CardClickManager : MonoBehaviour
                 break;
             case "CompleteCell":
                 _deckDataController._completeCells[_lastPlayIndex]._value -= 1;
+                _deckDataController._gameController.ChangeScore(-_activeCardData._value); 
                 break;
         }
-
     }
 
     private void ToggleCardRaycastsOnTopCells(bool _activeStatus)

@@ -20,6 +20,7 @@ public class FreeCell_Deck_Data : MonoBehaviour
 
     private List<CardData> _defaultDeck;
 
+    public FreeCell_GameController _gameController;
     public Sprite[] _clubs;
     public Sprite[] _diamonds;
     public Sprite[] _hearts;
@@ -83,27 +84,23 @@ public class FreeCell_Deck_Data : MonoBehaviour
         {
             if (_cardColumns[e].transform.childCount > 0)
             {
-                _cardColumns[e].transform.GetChild(0).transform.SetParent(_garbageHolder.transform);
-            }
-            for (int f = 0; f < _garbageHolder.transform.childCount; f++)
-            {
-                Destroy(_garbageHolder.transform.GetChild(f).gameObject);
+                _cardColumns[e].transform.GetChild(0).transform.SetParent(_garbageHolder.transform); //place all cards into a deactivated object for garbage collection
             }
         }
-    }
-
-    private void DisplayDeckDealForDebug()
-    {
-        //function to make sure data set lines up with display
-        for (int x = 0; x < 8; x++)
+        for(int g = 0; g < 4; g++)
         {
-            string _info = "";
-
-            for (int y = 0; y < 19; y++)
+            if (_freeCellHolder.transform.GetChild(g).childCount > 0)
             {
-                _info += (_boardData._cards[x, y]._value).ToString() + " of " + _boardData._cards[x, y]._suit + "\n";
+                _freeCellHolder.transform.GetChild(g).transform.GetChild(0).transform.SetParent(_garbageHolder.transform);
             }
-            Debug.Log("the " + x + " column has: " + _info);
+            if (_completeCellHolder.transform.GetChild(g).childCount > 0)
+            {
+                _completeCellHolder.transform.GetChild(g).transform.GetChild(0).transform.SetParent(_garbageHolder.transform);
+            }
+        }
+        for (int f = 0; f < _garbageHolder.transform.childCount; f++) //take out the trash
+        {
+            Destroy(_garbageHolder.transform.GetChild(f).gameObject);
         }
     }
 
@@ -111,6 +108,7 @@ public class FreeCell_Deck_Data : MonoBehaviour
     {
         //function that starts a new game, deals cards out on to the game board and sets the data
         ClearBoard();
+        _gameController.ResetGameStats();
         SeedColumnData();
         SeedDefaultDeck();
 
