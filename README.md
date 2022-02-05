@@ -7,6 +7,7 @@ Raven here; I've included some developer notes in the readme
 How far I got on the freecell project:
 
 Completed:
+
   -three screens (welcome, play, end)
   
   -game logic and rules
