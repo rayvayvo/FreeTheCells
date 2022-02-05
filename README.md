@@ -1,13 +1,18 @@
 # FreeTheCells
 
 Hello there!
+
 Raven here; I've included some developer notes in the readme
 
 
 
+
+
 How far I got on the freecell project:
+====================================
 
 Completed:
+------------------------------------
 
 
   -three screens (welcome, play, end)
@@ -25,18 +30,15 @@ Completed:
   -JSON writing for player stats
   
   -uploaded via Github
-  
-
 
 
 Not completed:
-
+------------------------------------
   -special animations/effects
 
 
-
 known bugs since I ran out of time:
-
+------------------------------------
 
   -Double clicking cards to clear from "freecell" slot sometimes doesn't clear data properly and renders that slot unusable.
   
@@ -48,8 +50,10 @@ known bugs since I ran out of time:
   
   
   
+  
+  
 If I had one more day:
-
+------------------------------------
 
   -API for downloading more card back styles
   
