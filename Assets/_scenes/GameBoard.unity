@@ -2401,6 +2401,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _victoryWindow: {fileID: 1599688504}
+  _menuWindow: {fileID: 1493088796}
   _victoryScoreText: {fileID: 2146784799}
   _victoryTimeText: {fileID: 2044288785}
   _totalScoreText: {fileID: 1498829645}
@@ -2409,6 +2410,11 @@ MonoBehaviour:
   _totalWinsText: {fileID: 64770717}
   _gameClockText: {fileID: 1702846731}
   _scoreText: {fileID: 1868367299}
+  _playerStats:
+    _totalScore: 0
+    _totalTime: 0
+    _gamesPlayed: 0
+    _gamesWon: 0
 --- !u!114 &1378145913
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3201,7 +3207,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1599688505
 RectTransform:
   m_ObjectHideFlags: 0
