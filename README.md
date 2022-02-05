@@ -1,8 +1,9 @@
 # FreeTheCells
-FreeCell
 
 Hello there!
 Raven here; I've included some developer notes in the readme
+
+
 
 How far I got on the freecell project:
 
@@ -26,9 +27,13 @@ Completed:
   -uploaded via Github
   
 
+
+
 Not completed:
 
   -special animations/effects
+
+
 
 known bugs since I ran out of time:
 
@@ -40,6 +45,8 @@ known bugs since I ran out of time:
   -under certain conditions you can move a stack of cards that match the alternating suit convention, but the top card value doesnt match (the following cards in the        stack do though).
   
   -starting new game sometimes doesn't add one to _playerstats._gamesplayed
+  
+  
   
 If I had one more day:
 
