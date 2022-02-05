@@ -8,12 +8,19 @@ How far I got on the freecell project:
 
 Completed:
   -three screens (welcome, play, end)
+  
   -game logic and rules
+  
   -dealing cards
+  
   -double clicking to move "open" cards to appropriate slot
+  
   -game card drag/drop mechanics
+  
   -not allowing illegal moves
+  
   -JSON writing for player stats
+  
   -uploaded via Github
   
 
