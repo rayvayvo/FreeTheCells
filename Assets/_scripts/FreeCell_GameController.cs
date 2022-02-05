@@ -40,15 +40,11 @@ public class FreeCell_GameController : MonoBehaviour
     private bool _keepTime;
     private float _gameClockTime;
     private int _score;
-    private string _statsSavePath;
-
 
     private void Start()
     {
         _keepTime = true;
         LoadPlayerStats();
-        _statsSavePath = Application.persistentDataPath;
-        _playerStats._gamesPlayed += 1;
     }
 
     private void Update()
@@ -76,6 +72,7 @@ public class FreeCell_GameController : MonoBehaviour
     {
         if (!Directory.Exists(Application.persistentDataPath)) //check if player stats exists, if not create
         {
+            Debug.Log("making a new one");
             Directory.CreateDirectory(Application.persistentDataPath);
             _playerStats = new PlayerStats
             {
@@ -88,12 +85,16 @@ public class FreeCell_GameController : MonoBehaviour
         }
         else //if so, load
         {
+            Debug.Log("we loadin");
             var _metaFileInfo = Directory.GetFiles(Application.persistentDataPath);
 
             if (_metaFileInfo.Length > 0)
             {
-                string _dataAsJson = File.ReadAllText(_metaFileInfo[0]);
-                PlayerStats _tempObj = JsonUtility.FromJson<PlayerStats>(_dataAsJson);
+                string _dataAsJson = File.ReadAllText(Application.persistentDataPath + "/PlayerStats.Json");
+                Debug.Log(_metaFileInfo[0]);
+                PlayerStats _loadedData = JsonUtility.FromJson<PlayerStats>(_dataAsJson);
+                Debug.Log(_loadedData._gamesPlayed + " : " + _loadedData._gamesWon + ":" + _loadedData._totalScore + ":" + _loadedData._totalTime);
+                _playerStats = _loadedData;
             }
         }
     }
@@ -103,6 +104,8 @@ public class FreeCell_GameController : MonoBehaviour
         //developer note: I should have used binary since Json allows manual editing of file data so you could change player stats
         string json = JsonUtility.ToJson(_playerStats);
         string path = Application.persistentDataPath + "/PlayerStats.json";
+
+        Debug.Log(_playerStats._totalTime + "!!!");
 
         using (FileStream fs = new FileStream(path, FileMode.Create))
         {
@@ -123,6 +126,7 @@ public class FreeCell_GameController : MonoBehaviour
         _victoryWindow.SetActive(false);
         _playerStats._gamesPlayed += 1;
         _menuWindow.SetActive(false);
+        
     }
 
     public void ChangeScore(int _amount)
@@ -130,6 +134,7 @@ public class FreeCell_GameController : MonoBehaviour
         _score += _amount;
         _scoreText.text = "Score: " + _score.ToString();
         _playerStats._totalScore += _amount;
+        SavePlayerStats(); //update the player stats whenever you get points so the game isn't constantly writing and updating data but still does frequently enough
 
         if (_score == 364) //amount of points a win is worth with each card being worth number value of card
         {

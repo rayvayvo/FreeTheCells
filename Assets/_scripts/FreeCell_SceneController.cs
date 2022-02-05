@@ -31,7 +31,7 @@ public class FreeCell_SceneController : MonoBehaviour
             {
                 float _progress = Mathf.Clamp01(_loadingOperation.progress / 0.9f);
                 _loadingText.text = (_progress * 100) + " %";
-                Debug.Log(_progress);
+                Debug.Log("loading progress: " + _progress);
             }
             else //when finished, close up
             {
